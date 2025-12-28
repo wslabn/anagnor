@@ -11,7 +11,11 @@ class GhostInventoryScanner:
     def __init__(self, config):
         self.config = config
         self.logger = logging.getLogger(__name__)
-        self.nm = nmap.PortScanner()
+        try:
+            self.nm = nmap.PortScanner()
+        except Exception as e:
+            self.logger.warning(f"Nmap not available: {e}")
+            self.nm = None
         
     def scan(self, networks: List[str]) -> Dict[str, Any]:
         """Scan for ghost inventory across networks"""
@@ -83,6 +87,10 @@ class GhostInventoryScanner:
         """Discover devices on network using nmap"""
         self.logger.info(f"Scanning network: {network}")
         
+        if not self.nm:
+            self.logger.warning("Nmap not available, using basic ping scan")
+            return self._basic_ping_scan(network)
+        
         try:
             # Quick host discovery scan
             self.nm.scan(hosts=network, arguments='-sn')
@@ -105,7 +113,28 @@ class GhostInventoryScanner:
             
         except Exception as e:
             self.logger.error(f"Network scan failed for {network}: {e}")
-            return []
+            return self._basic_ping_scan(network)
+    
+    def _basic_ping_scan(self, network: str) -> List[Dict[str, Any]]:
+        """Basic ping scan fallback when nmap unavailable"""
+        import ipaddress
+        devices = []
+        
+        try:
+            net = ipaddress.IPv4Network(network, strict=False)
+            for ip in list(net.hosts())[:50]:  # Limit to first 50 IPs
+                if NetworkUtils.is_host_alive(str(ip)):
+                    device = {
+                        'ip': str(ip),
+                        'hostname': NetworkUtils.resolve_hostname(str(ip)),
+                        'mac': NetworkUtils.get_mac_address(str(ip)),
+                        'discovered_time': datetime.now().isoformat()
+                    }
+                    devices.append(device)
+        except Exception as e:
+            self.logger.error(f"Basic scan failed: {e}")
+            
+        return devices
     
     def _find_stale_assets(self, domain_machines: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Find domain machines that haven't checked in recently"""

@@ -1,4 +1,3 @@
-import nmap
 import logging
 import re
 from typing import Dict, List, Any
@@ -6,11 +5,21 @@ import requests
 from collections import defaultdict
 from utils.network_utils import NetworkUtils
 
+try:
+    import nmap
+    NMAP_AVAILABLE = True
+except ImportError:
+    NMAP_AVAILABLE = False
+
 class SoftwareAuditScanner:
     def __init__(self, config):
         self.config = config
         self.logger = logging.getLogger(__name__)
-        self.nm = nmap.PortScanner()
+        if NMAP_AVAILABLE:
+            self.nm = nmap.PortScanner()
+        else:
+            self.nm = None
+            self.logger.warning("Nmap not available, using basic scanning")
         
     def scan(self, networks: List[str]) -> Dict[str, Any]:
         """Audit software installations and versions"""

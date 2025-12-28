@@ -1,5 +1,3 @@
-import nmap
-import requests
 import logging
 from typing import Dict, List, Any
 import socket
@@ -7,11 +5,21 @@ import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from utils.network_utils import NetworkUtils
 
+try:
+    import nmap
+    NMAP_AVAILABLE = True
+except ImportError:
+    NMAP_AVAILABLE = False
+
 class DarkHardwareScanner:
     def __init__(self, config):
         self.config = config
         self.logger = logging.getLogger(__name__)
-        self.nm = nmap.PortScanner()
+        if NMAP_AVAILABLE:
+            self.nm = nmap.PortScanner()
+        else:
+            self.nm = None
+            self.logger.warning("Nmap not available, using basic scanning")
         
     def scan(self, networks: List[str]) -> Dict[str, Any]:
         """Scan for IoT devices, printers, and other dark hardware"""
