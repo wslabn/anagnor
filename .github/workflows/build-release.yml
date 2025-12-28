@@ -59,12 +59,12 @@ jobs:
 
     - name: Create Release
       id: create_release
-      uses: actions/create-release@v1
+      uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ github.ref }}
-        release_name: Anagnor ${{ github.ref }}
+        name: Anagnor ${{ github.ref }}
         draft: false
         prerelease: false
         body: |
@@ -87,34 +87,8 @@ jobs:
           ### Requirements
           - Administrator/root privileges
           - Network access to target ranges
-          - nmap installed on system
-
-    - name: Upload Windows Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./anagnor-windows.exe/anagnor.exe
-        asset_name: anagnor-windows.exe
-        asset_content_type: application/octet-stream
-
-    - name: Upload Linux Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./anagnor-linux/anagnor
-        asset_name: anagnor-linux
-        asset_content_type: application/octet-stream
-
-    - name: Upload macOS Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./anagnor-macos/anagnor
-        asset_name: anagnor-macos
-        asset_content_type: application/octet-stream
+          - nmap (auto-installed)
+        files: |
+          anagnor-windows.exe/anagnor.exe
+          anagnor-linux/anagnor
+          anagnor-macos/anagnor
