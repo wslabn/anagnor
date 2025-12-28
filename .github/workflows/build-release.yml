@@ -62,18 +62,18 @@ jobs:
     - name: Prepare artifacts
       run: |
         ls -la
-        cp anagnor-windows.exe/anagnor.exe ./anagnor-windows.exe
-        cp anagnor-linux/anagnor ./anagnor-linux
-        cp anagnor-macos/anagnor ./anagnor-macos
-        chmod +x anagnor-linux anagnor-macos
+        cp anagnor-windows.exe/anagnor.exe windows-anagnor.exe
+        cp anagnor-linux/anagnor linux-anagnor
+        cp anagnor-macos/anagnor macos-anagnor
+        chmod +x linux-anagnor macos-anagnor
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          anagnor-windows.exe
-          anagnor-linux
-          anagnor-macos
+          windows-anagnor.exe
+          linux-anagnor
+          macos-anagnor
         body: |
           ## Anagnor Network Assessment Tool
           
