@@ -61,9 +61,9 @@ jobs:
 
     - name: Rename artifacts
       run: |
-        mv anagnor-windows.exe/anagnor.exe anagnor-windows.exe
-        mv anagnor-linux/anagnor anagnor-linux
-        mv anagnor-macos/anagnor anagnor-macos
+        cp anagnor-windows.exe/anagnor.exe anagnor-windows.exe
+        cp anagnor-linux/anagnor anagnor-linux
+        cp anagnor-macos/anagnor anagnor-macos
         chmod +x anagnor-linux anagnor-macos
 
     - name: Create Release
