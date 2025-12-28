@@ -1,0 +1,5 @@
+[autorun]
+open=run_anagnor.bat
+icon=anagnor.exe
+label=Anagnor Network Scanner
+action=Run Anagnor Network Assessment
