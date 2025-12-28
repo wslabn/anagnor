@@ -1,0 +1,56 @@
+# Anagnor Configuration File
+
+# Logging configuration
+log_level: INFO
+
+# Network scanning settings
+scan_timeout: 30
+max_threads: 50
+ping_timeout: 1
+
+# Additional networks to scan (beyond auto-discovered)
+additional_networks: []
+
+# Domain/Active Directory settings
+domain:
+  server: null  # LDAP server IP/hostname
+  username: null
+  password: null
+  base_dn: null
+
+# Naming convention patterns for shadow IT detection
+naming_conventions:
+  corporate_patterns:
+    - "^[A-Z]{2,4}-[0-9]{4,6}$"  # Example: NYC-001234
+    - "^WS-[A-Z0-9]{6}$"         # Example: WS-ABC123
+  shadow_indicators:
+    - ".*[Mm]ac[Bb]ook.*"
+    - ".*[Ii][Pp]hone.*"
+    - ".*[Pp]ersonal.*"
+    - ".*[Hh]ome.*"
+
+# Port scanning configuration
+port_scan:
+  common_ports: [21, 22, 23, 25, 53, 80, 110, 135, 139, 143, 443, 445, 993, 995, 1723, 3389, 5900]
+  risk_ports: [445, 3389, 135, 139]
+  
+# IoT device identification
+iot_signatures:
+  mac_prefixes:
+    "00:1B:21": "Cisco IP Phone"
+    "00:04:F2": "Polycom"
+    "00:0F:34": "Axis Camera"
+    "B8:27:EB": "Raspberry Pi"
+    "DC:A6:32": "Raspberry Pi"
+  
+# Software version tracking
+software_tracking:
+  browsers: ["chrome", "firefox", "edge", "safari"]
+  office: ["microsoft office", "adobe acrobat", "adobe reader"]
+  security: ["windows defender", "symantec", "mcafee", "crowdstrike"]
+
+# Report settings
+report:
+  company_name: "Network Assessment"
+  include_charts: true
+  risk_threshold: 70
