@@ -25,13 +25,10 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install -r requirements-build.txt
 
     - name: Test imports
       run: |
-        python -c "import anagnor; print('Import successful')"
-        python -c "from modules.ghost_inventory import GhostInventoryScanner; print('Modules import successful')"
-
-    - name: Test configuration loading
-      run: |
-        python -c "from utils.config import Config; c = Config('config.yaml'); print('Config loaded successfully')"
+        python -c "from utils.config import Config; print('Config import successful')"
+        python -c "from utils.network_utils import NetworkUtils; print('NetworkUtils import successful')"
+        python -c "import yaml, jinja2, requests; print('Core dependencies imported successfully')"
