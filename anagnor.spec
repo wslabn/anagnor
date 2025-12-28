@@ -1,6 +1,17 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+import os
+
 block_cipher = None
+
+# Platform-specific configurations
+if sys.platform == 'win32':
+    console = True
+    icon = None
+else:
+    console = True
+    icon = None
 
 a = Analysis(
     ['anagnor.py'],
@@ -14,7 +25,7 @@ a = Analysis(
     hiddenimports=[
         'yaml',
         'nmap',
-        'scapy',
+        'scapy.all',
         'requests',
         'psutil',
         'netifaces',
@@ -24,11 +35,28 @@ a = Analysis(
         'colorama',
         'tabulate',
         'jinja2',
+        'socket',
+        'subprocess',
+        'threading',
+        'concurrent.futures',
+        'ipaddress',
+        'datetime',
+        'json',
+        'logging',
+        'pathlib',
+        're',
+        'collections',
     ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    excludes=[
+        'tkinter',
+        'matplotlib',
+        'numpy',
+        'pandas',
+        'scipy',
+    ],
     win_no_prefer_redirects=False,
     win_private_assemblies=False,
     cipher=block_cipher,
@@ -51,10 +79,11 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,
+    console=console,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
+    icon=icon,
 )
