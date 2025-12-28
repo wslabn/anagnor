@@ -59,7 +59,7 @@ if (Test-Path ".git") {
 Write-Host "Installing Python dependencies..." -ForegroundColor Yellow
 pip install -r requirements.txt
 
-# Install Nmap (required for network scanning)
+# Check for nmap
 Write-Host "Checking Nmap installation..." -ForegroundColor Yellow
 try {
     nmap --version | Out-Null
@@ -71,6 +71,13 @@ try {
     Invoke-WebRequest -Uri $nmapUrl -OutFile $nmapInstaller
     Start-Process -FilePath $nmapInstaller -ArgumentList "/S" -Wait
     Remove-Item $nmapInstaller
+    
+    # Add nmap to PATH
+    $nmapPath = "C:\Program Files (x86)\Nmap"
+    $currentPath = [Environment]::GetEnvironmentVariable("PATH", "Machine")
+    if ($currentPath -notlike "*$nmapPath*") {
+        [Environment]::SetEnvironmentVariable("PATH", "$currentPath;$nmapPath", "Machine")
+    }
 }
 
 # Create batch launcher

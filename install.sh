@@ -17,21 +17,22 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Detect OS and install dependencies
-echo "Installing system dependencies..."
-if command -v apt-get &> /dev/null; then
-    # Debian/Ubuntu
-    apt-get update
-    apt-get install -y python3 python3-pip nmap arp-scan git
-elif command -v yum &> /dev/null; then
-    # CentOS/RHEL
-    yum install -y python3 python3-pip nmap git
-elif command -v brew &> /dev/null; then
-    # macOS
-    brew install python nmap arp-scan
+# Check for nmap
+echo "Checking nmap installation..."
+if ! command -v nmap &> /dev/null; then
+    echo "Installing nmap..."
+    if command -v apt-get &> /dev/null; then
+        apt-get update && apt-get install -y nmap
+    elif command -v yum &> /dev/null; then
+        yum install -y nmap
+    elif command -v dnf &> /dev/null; then
+        dnf install -y nmap
+    else
+        echo "Please install nmap manually"
+        exit 1
+    fi
 else
-    echo "Unsupported OS. Please install Python 3, nmap, and git manually."
-    exit 1
+    echo "Nmap already installed"
 fi
 
 # Create installation directory

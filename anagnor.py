@@ -7,6 +7,9 @@ Discovers ghost inventory, dark hardware, and critical risks in enterprise netwo
 import json
 import time
 import logging
+import subprocess
+import platform
+import sys
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Any
@@ -27,6 +30,9 @@ class AnagnorScanner:
         self.results = {}
         self.start_time = datetime.now()
         
+        # Check and install nmap if needed
+        self._ensure_nmap_installed()
+        
         # Initialize scanners
         self.scanners = {
             'ghost_inventory': GhostInventoryScanner(self.config),
@@ -34,6 +40,50 @@ class AnagnorScanner:
             'risk_discovery': RiskDiscoveryScanner(self.config),
             'software_audit': SoftwareAuditScanner(self.config)
         }
+        
+    def _ensure_nmap_installed(self):
+        """Check for nmap and install if missing"""
+        try:
+            subprocess.run(['nmap', '--version'], capture_output=True, check=True)
+            self.logger.info("Nmap found")
+            return
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            self.logger.warning("Nmap not found, attempting to install...")
+            
+        system = platform.system().lower()
+        try:
+            if system == 'linux':
+                # Try different package managers
+                for cmd in [['apt-get', 'update'], ['apt-get', 'install', '-y', 'nmap']]:
+                    try:
+                        subprocess.run(['sudo'] + cmd, check=True)
+                        break
+                    except subprocess.CalledProcessError:
+                        pass
+                else:
+                    # Try yum/dnf
+                    for pkg_mgr in ['yum', 'dnf']:
+                        try:
+                            subprocess.run(['sudo', pkg_mgr, 'install', '-y', 'nmap'], check=True)
+                            break
+                        except subprocess.CalledProcessError:
+                            continue
+                            
+            elif system == 'darwin':  # macOS
+                subprocess.run(['brew', 'install', 'nmap'], check=True)
+                
+            elif system == 'windows':
+                self.logger.error("Please install nmap manually from https://nmap.org/download.html")
+                sys.exit(1)
+                
+            # Verify installation
+            subprocess.run(['nmap', '--version'], capture_output=True, check=True)
+            self.logger.info("Nmap installed successfully")
+            
+        except Exception as e:
+            self.logger.error(f"Failed to install nmap: {e}")
+            self.logger.error("Please install nmap manually and run again")
+            sys.exit(1)
         
     def setup_logging(self):
         logging.basicConfig(
