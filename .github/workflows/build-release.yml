@@ -59,11 +59,12 @@ jobs:
     - name: Download all artifacts
       uses: actions/download-artifact@v4
 
-    - name: Rename artifacts
+    - name: Prepare artifacts
       run: |
-        cp anagnor-windows.exe/anagnor.exe anagnor-windows.exe
-        cp anagnor-linux/anagnor anagnor-linux
-        cp anagnor-macos/anagnor anagnor-macos
+        ls -la
+        cp anagnor-windows.exe/anagnor.exe ./anagnor-windows.exe
+        cp anagnor-linux/anagnor ./anagnor-linux
+        cp anagnor-macos/anagnor ./anagnor-macos
         chmod +x anagnor-linux anagnor-macos
 
     - name: Create Release
