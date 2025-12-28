@@ -26,30 +26,44 @@ Anagnor is a comprehensive network assessment tool designed to discover and anal
 - **Version Drift**: Track software version inconsistencies
 - **License Compliance**: Monitor commercial software deployments
 
-## Installation
+## Quick Start
 
-### Prerequisites
-- Python 3.8 or higher
-- Linux/macOS (Windows support limited)
-- Network access to target ranges
-- Optional: Active Directory credentials for domain analysis
+### Option 1: Download Pre-built Executable (Recommended)
+**No installation required!**
 
-### Install Dependencies
+📥 **[Download Latest Release](https://github.com/wslabn/anagnor/releases/latest)**
+
+- **Windows**: `anagnor-windows.exe`
+- **Linux**: `anagnor-linux`
+- **macOS**: `anagnor-macos`
+
 ```bash
-pip install -r requirements.txt
+# Linux/Mac: Make executable and run
+chmod +x anagnor-linux
+sudo ./anagnor-linux
+
+# Windows: Run as Administrator
+anagnor-windows.exe
 ```
 
-### System Requirements
-Some features require additional system tools:
+### Option 2: One-Line Web Install
+**Linux/Mac:**
 ```bash
-# Ubuntu/Debian
-sudo apt-get install nmap arp-scan
+curl -sSL https://raw.githubusercontent.com/wslabn/anagnor/main/install.sh | sudo bash
+```
 
-# CentOS/RHEL
-sudo yum install nmap arp-scan
+**Windows (PowerShell as Admin):**
+```powershell
+iex ((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/wslabn/anagnor/main/install.ps1'))
+```
 
-# macOS
-brew install nmap arp-scan
+### Option 3: Manual Installation
+```bash
+git clone https://github.com/wslabn/anagnor.git
+cd anagnor
+pip install -r requirements.txt
+# Install nmap via package manager
+python anagnor.py
 ```
 
 ## Configuration
@@ -84,27 +98,29 @@ additional_networks:
 ### Basic Scan
 ```bash
 # Auto-discover and scan local networks
-python anagnor.py
+anagnor
 
 # Scan specific networks
-python anagnor.py --networks 192.168.1.0/24 10.0.0.0/24
+anagnor --networks 192.168.1.0/24 10.0.0.0/24
 
 # Generate different report formats
-python anagnor.py --output html
-python anagnor.py --output json
+anagnor --output html
+anagnor --output json
 ```
 
 ### Advanced Usage
 ```bash
 # Use custom configuration
-python anagnor.py --config custom_config.yaml
+anagnor --config custom_config.yaml
 
 # Save raw results
-python anagnor.py --save results.json
+anagnor --save results.json
 
 # Example with all options
-python anagnor.py --config config.yaml --networks 192.168.1.0/24 --output html --save scan_results.json
+anagnor --config config.yaml --networks 192.168.1.0/24 --output html --save scan_results.json
 ```
+
+**Note:** Replace `anagnor` with `./anagnor-linux`, `./anagnor-macos`, or `anagnor-windows.exe` if using downloaded executables.
 
 ### Programmatic Usage
 ```python
@@ -124,6 +140,13 @@ ghost_assets = results['ghost_inventory']['stale_assets']
 iot_devices = results['dark_hardware']['iot_devices']
 eol_systems = results['risk_discovery']['eol_systems']
 ```
+
+## System Requirements
+
+- **Administrator/root privileges** (required for network scanning)
+- **Network access** to target ranges
+- **nmap** (auto-installed with web installer)
+- **Windows 10+, Linux, or macOS**
 
 ## Output
 
@@ -204,7 +227,8 @@ Anagnor calculates an overall risk score (0-100) based on:
 **Permission Denied**
 ```bash
 # Run with appropriate privileges for network scanning
-sudo python anagnor.py
+sudo ./anagnor-linux  # Linux/Mac
+# Or run as Administrator on Windows
 ```
 
 **LDAP Connection Failed**
